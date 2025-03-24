@@ -1,0 +1,50 @@
+#include <iostream> 
+#include <cmath> 
+#include <cstdlib> 
+
+using namespace std;
+struct RC_SIM
+{
+    double time;
+    double Ic;
+    double Q;
+};
+
+int main(void)
+{
+    double start_time = 0.0;
+    double end_time = 10.0;
+    double time_step = 0.1;
+    double R = 1.0; 
+    double C = 1.0; 
+
+    cout << "Input Start Time : ";
+    cin >> start_time; 
+    cout << endl;
+
+    long no_array = (int)((end_time - start_time) / time_step) + 1;
+   
+
+    if (no_array <= 0)
+    {
+        cout << "잘못된 입력입니다." << endl;
+        return -1;
+    }
+    struct RC_SIM* rc_data = (struct RC_SIM*)malloc(no_array * sizeof(struct RC_SIM));
+
+    double time_constant = R * C;
+    double V = 5.0;
+    cout << "Time             (Ic)            (Q)" << endl;
+    cout << "--------------------------------------" << endl;
+    for (long i = 0; i < no_array; i++)
+    {
+        rc_data[i].time = start_time + i * time_step;
+        rc_data[i].Ic = (V / R) * exp(-rc_data[i].time / time_constant);
+        rc_data[i].Q = C * V * (1 - exp(-rc_data[i].time / time_constant));
+
+        printf("%.2f      %.5f        %.5f\n", rc_data[i].time, rc_data[i].Ic, rc_data[i].Q);
+    }
+
+    free(rc_data);
+    return 0;
+}
